@@ -9,7 +9,6 @@ import controller.UsuarioJpaController;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +48,7 @@ public void run() {
             
             while(this.state == true) {
                 String comando = (String) entrada.readObject();
-                if("l".equals(comando) || "L".equals(comando)) {
+                if("l".equals(comando.toLowerCase())) {
                     saida.writeObject(ctrl.findProdutoEntities());
                 }
                 this.state=false;
