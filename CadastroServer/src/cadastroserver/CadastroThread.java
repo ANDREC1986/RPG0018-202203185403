@@ -9,6 +9,7 @@ import controller.UsuarioJpaController;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,11 +23,13 @@ public class CadastroThread extends Thread {
     private ProdutoJpaController ctrl;
     private UsuarioJpaController ctrlUsu;
     private Socket s1;
+    private boolean state;
 
     public CadastroThread(ProdutoJpaController ctrl, UsuarioJpaController ctrlUsu, Socket s1) {
         this.ctrl = ctrl;
         this.ctrlUsu = ctrlUsu;
         this.s1 = s1;
+        this.state = true;
     }
 
 @Override
@@ -44,11 +47,12 @@ public void run() {
                 return;
             }
             
-            while(true) {
-                char comando = (char) entrada.readChar();
+            while(this.state == true) {
+                String comando = (String) entrada.readObject();
                 if("l".equals(comando) || "L".equals(comando)) {
                     saida.writeObject(ctrl.findProdutoEntities());
-                } 
+                }
+                this.state=false;
             }
             
         } catch (IOException | ClassNotFoundException ex) {
