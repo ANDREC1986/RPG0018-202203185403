@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package cadastrclientev2;
+package cadastroclientv2;
 import javax.swing.JDialog;
 import javax.swing.JTextArea;
 /**

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package cadastrclientev2;
+package cadastroclientv2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author andre
  */
-public class CadastrClienteV2 {
+public class CadastroClientV2 {
 
     /**
      * @param args the command line arguments
@@ -65,7 +65,7 @@ public class CadastrClienteV2 {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(CadastrClienteV2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CadastroClientV2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -79,6 +79,5 @@ public class CadastrClienteV2 {
         System.out.println("Valor Unitario:");
         saida.writeObject(BigDecimal.valueOf(Float.parseFloat(reader.readLine())));     
     }
-
 }
 
