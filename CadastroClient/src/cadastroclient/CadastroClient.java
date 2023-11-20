@@ -39,6 +39,5 @@ public class CadastroClient {
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(CadastroClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-       
+    }       
 }

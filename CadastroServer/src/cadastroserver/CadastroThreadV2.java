@@ -14,6 +14,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.net.Socket;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Movimento;
@@ -37,7 +41,6 @@ public class CadastroThreadV2 extends Thread {
         this.ctrlUsu = ctrlUsu;
         this.ctrlMov = ctrlMov;
         this.ctrlPessoa = ctrlPessoa;
-        this.state = true;
         this.s1 = s1;
     }
 
@@ -53,46 +56,54 @@ public void run() {
                 saida.writeObject(null);
                 s1.close();
                 return;
+            } else {
+                saida.writeObject(data());
+                saida.writeObject("Usuario conectado com sucesso");
             }
             
-            while(this.state == true) {
+            while(true) {
                 String comando = (String) entrada.readObject();
                 if("l".equals(comando.toLowerCase())) {
+                    saida.writeObject(data());
                     saida.writeObject(ctrl.findProdutoEntities());
                 } else if("e".equals(comando) || "E".equals(comando)) {
                     Movimento mov = new Movimento();
                     mov.setIdUsuario(usuario);
                     mov.setTipo('E');
-                    int pessoaId = (int) entrada.readInt();
+                    int pessoaId = (int) entrada.readObject();
                     mov.setIdPessoa(this.ctrlPessoa.findPessoa(pessoaId));
-                    int produtoId = (int) entrada.readInt();
+                    int produtoId = (int) entrada.readObject();
                     mov.setIdProduto(this.ctrl.findProduto(produtoId));
-                    int prodQnt = (int) entrada.readInt();
+                    int prodQnt = (int) entrada.readObject();
                     mov.setQuantidade(prodQnt);
-                    int prodPrc = (int) entrada.readInt();
-                    mov.setValorUnitario(BigDecimal.valueOf(prodPrc));
+                    BigDecimal prodPrc = (BigDecimal) entrada.readObject();
+                    mov.setValorUnitario(prodPrc);
                     ctrlMov.create(mov);
                     Produto prod = ctrl.findProduto(produtoId);
                     prod.setQuantidade(prod.getQuantidade()+prodQnt);
                     ctrl.edit(prod);
+                    saida.writeObject(data());
+                    saida.writeObject("Entrada efetuada com sucesso");
                 } else if("s".equals(comando) || "s".equals(comando)) {
                     Movimento mov = new Movimento();
                     mov.setIdUsuario(usuario);
                     mov.setTipo('S');
-                    int pessoaId = (int) entrada.readInt();
+                    int pessoaId = (int) entrada.readObject();
                     mov.setIdPessoa(this.ctrlPessoa.findPessoa(pessoaId));
-                    int produtoId = (int) entrada.readInt();
+                    int produtoId = (int) entrada.readObject();
                     mov.setIdProduto(this.ctrl.findProduto(produtoId));
-                    int prodQnt = (int) entrada.readInt();
+                    int prodQnt = (int) entrada.readObject();
                     mov.setQuantidade(prodQnt);
-                    int prodPrc = (int) entrada.readInt();
-                    mov.setValorUnitario(BigDecimal.valueOf(prodPrc));
+                    BigDecimal prodPrc = (BigDecimal) entrada.readObject();
+                    mov.setValorUnitario(prodPrc);
                     ctrlMov.create(mov);
                     Produto prod = ctrl.findProduto(produtoId);
-                    prod.setQuantidade(prod.getQuantidade()-prodQnt);
+                    prod.setQuantidade(prod.getQuantidade() - prodQnt);
                     ctrl.edit(prod);
+                    saida.writeObject(data());
+                    saida.writeObject("Saida efetuada com sucesso");
+                    
                 }
-                this.state=false;
             }
             
         } catch (IOException | ClassNotFoundException ex) {
@@ -102,6 +113,16 @@ public void run() {
         } catch (Exception ex) {
             Logger.getLogger(CadastroThreadV2.class.getName()).log(Level.SEVERE, null, ex);
         }
+}
+
+private String data(){
+    LocalDateTime now = LocalDateTime.now();
+    DayOfWeek diaDaSemana = now.getDayOfWeek();
+    Month mes = now.getMonth();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd HH:mm:ss");
+    String time = now.format(formatter);
+    String data = ">> Nova comunicação em " + diaDaSemana.name() + " " + mes.name() + " " + time + " BRT " + now.getYear();  
+    return data;
 }
     
 }
